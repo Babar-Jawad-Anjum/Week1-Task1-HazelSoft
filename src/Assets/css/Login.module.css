@@ -1,0 +1,77 @@
+.login__parent__container {
+  width: 100vw;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+}
+
+.left__portion {
+  width: 550px;
+  padding: 50px 70px 50px 70px;
+}
+.heading
+{
+    font-size: 30px;
+    text-align: center;
+}
+.sub__heading
+{
+    font-size: 25px;
+    margin: 20px 0;
+    text-align: center;
+}
+.logo__container
+{
+    display: flex;
+    justify-content: center;
+}
+.logo {
+  height: 200px;
+  width: 200px;
+}
+.left__portion input[type="email"],
+.left__portion input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #89c2c8;
+  border-radius: 3px;
+}
+
+.left__portion label {
+  display: block;
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  
+}
+.left__portion button {
+  width: 100%;
+  padding: 10px;
+  background-color: #01bbcf;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.left__portion button:hover {
+  background-color: #0d7d8a;
+}
+
+.forgot__password
+{
+  margin-bottom: 15px;
+  float: right;
+}
+.forgot__password > a
+{
+  text-decoration: none;
+  color: black;
+}
+
+.right__portion {
+  width: calc(100vw - 550px);
+  background-color: #01bbcf;
+}
