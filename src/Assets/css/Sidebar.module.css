@@ -1,0 +1,60 @@
+.sidebar__parent__container {
+  display: flex;
+}
+.sidebar {
+  background: #01BBCF;
+  color: #fff;
+  height: 100vh;
+  transition: all 0.5s;
+  position: relative;
+}
+.sidebar__children {
+  width: 100%;
+  padding:25px;
+}
+.hamburger {
+  background: #025c91;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bolder;
+  border-radius: 100px;
+  position: absolute;
+  right: -18px;
+  top: 17px;
+  cursor: pointer;
+}
+.sidebar__logo__container {
+  text-align: center;
+}
+.sidebar__logo {
+  height: 150px;
+  width: 150px;
+}
+.link {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 10px 15px;
+  gap: 15px;
+  transition: all 0.5s;
+  margin-bottom: 7px;
+  text-decoration: none;
+}
+.link.active
+{
+  background: #000;
+}
+.link:hover {
+  background: #025c91;
+  color: white;
+  transition: all 0.3s;
+}
+
+.icon,
+.link__text {
+  font-size: 20px;
+}

@@ -1,0 +1,77 @@
+.modal {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  background-color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  width: 30rem;
+  z-index: 10;
+  position: fixed;
+  top: 20vh;
+  left: calc(50% - 15rem);
+}
+.modal__cancel__icon {
+  background-color: #01bbcf;
+  color: white;
+  border: 5px solid white;
+  position: absolute;
+  right: -16px;
+  top: -16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+.modal__cancel__icon:hover {
+  border: 5px solid #01bbcf;
+}
+.modal__title {
+  background-color: #01bbcf;
+  color: white;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.form__group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form__group label {
+  width: 100px;
+  padding-right: 10px;
+}
+
+.form__group input[type="text"],
+.form__group input[type="email"],
+.form__group select {
+  flex: 1;
+  padding: 10px;
+}
+
+.form__submit
+{
+    background-color: #01bbcf;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    float: right;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.form__submit:hover
+{
+    background: #038b9a;
+}
+
+.form__group input:focus
+{
+    outline: none;
+    border: 1px solid #01bbcf;
+}
