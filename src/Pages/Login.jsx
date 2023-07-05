@@ -2,11 +2,10 @@ import React, { useRef } from "react";
 import classes from "../Assets/css/Login.module.css";
 import logo from "../Assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
-
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -15,10 +14,23 @@ const Login = () => {
     e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
-    setTimeout(() => {
-      navigate('/users')
-    }, 1000);
-    
+    alert(email)
+    alert(password)
+    axios
+      .post("http://localhost:4000/api/admin/login", {
+        email: email,
+        password: password,
+      })
+      .then(function (response) {
+        if (response.data.success) {
+          alert(response.data.success);
+        } else {
+          alert(response.data.error);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (
