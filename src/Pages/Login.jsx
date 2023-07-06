@@ -3,6 +3,7 @@ import classes from "../Assets/css/Login.module.css";
 import logo from "../Assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,8 +15,6 @@ const Login = () => {
     e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
-    alert(email)
-    alert(password)
     axios
       .post("http://localhost:4000/api/admin/login", {
         email: email,
@@ -23,9 +22,12 @@ const Login = () => {
       })
       .then(function (response) {
         if (response.data.success) {
-          alert(response.data.success);
+          toast.success(response.data.success);
+          setTimeout(() => {
+            navigate("/")
+          }, 1000);
         } else {
-          alert(response.data.error);
+          toast.error(response.data.error);
         }
       })
       .catch(function (error) {
@@ -35,6 +37,7 @@ const Login = () => {
 
   return (
     <div className={classes.login__parent__container}>
+      <Toaster />
       <div className={classes.left__portion}>
         <div className={classes.logo__container}>
           <img className={classes.logo} src={logo} alt="logo" />
