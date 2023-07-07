@@ -1,19 +1,34 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+
 import classes from "../Assets/css/Sidebar.module.css";
 import logo from "../Assets/images/logo.png";
 
-import { RxHamburgerMenu } from "react-icons/rx";
-import { MdOutlineDashboardCustomize, MdOutlineAddToDrive } from "react-icons/md";
 import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
+import { RxHamburgerMenu } from "react-icons/rx";
+import {
+  MdOutlineDashboardCustomize,
+  MdOutlineAddToDrive,
+} from "react-icons/md";
 
-import { NavLink } from "react-router-dom";
+import { AuthContext } from "../Context/Auth";
 
-const Sidebar = ({ children }) => {
+const Sidebar = () => {
+  const { setIsLoggedIn } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
   const [isOpenSidebar, setIsOpenSidebar] = useState(true);
   const [active, setActive] = useState(0);
 
   const sideBarHandler = () => {
     setIsOpenSidebar((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth-token");
+    setIsLoggedIn(false);
+    navigate("/login");
   };
 
   return (
@@ -40,7 +55,12 @@ const Sidebar = ({ children }) => {
           />
         </div>
         <div style={{ marginTop: isOpenSidebar ? "0" : "70px" }}>
-          <NavLink onClick={() => setActive(0)} style={active === 0 ? {background: "#025c91"} : null} to="/" className={classes.link}>
+          <NavLink
+            onClick={() => setActive(0)}
+            style={active === 0 ? { background: "#025c91" } : null}
+            to="/"
+            className={classes.link}
+          >
             <div className={classes.icon}>
               <MdOutlineDashboardCustomize />
             </div>
@@ -51,7 +71,12 @@ const Sidebar = ({ children }) => {
               Dashboard
             </div>
           </NavLink>
-          <NavLink onClick={() => setActive(1)} style={active === 1 ? {background: "#025c91"} : null} to="/users" className={classes.link}>
+          <NavLink
+            onClick={() => setActive(1)}
+            style={active === 1 ? { background: "#025c91" } : null}
+            to="/users"
+            className={classes.link}
+          >
             <div className={classes.icon}>
               <AiOutlineUser />
             </div>
@@ -62,7 +87,12 @@ const Sidebar = ({ children }) => {
               Users
             </div>
           </NavLink>
-          <NavLink onClick={() => setActive(2)} style={active === 2 ? {background: "#025c91"} : null} to="/add-user" className={classes.link}>
+          <NavLink
+            onClick={() => setActive(2)}
+            style={active === 2 ? { background: "#025c91" } : null}
+            to="/add-user"
+            className={classes.link}
+          >
             <div className={classes.icon}>
               <MdOutlineAddToDrive />
             </div>
@@ -73,7 +103,7 @@ const Sidebar = ({ children }) => {
               Add User
             </div>
           </NavLink>
-          <NavLink className={classes.link}>
+          <NavLink className={classes.link} onClick={handleLogout}>
             <div className={classes.icon}>
               <AiOutlineLogout />
             </div>
@@ -86,7 +116,9 @@ const Sidebar = ({ children }) => {
           </NavLink>
         </div>
       </div>
-      <main className={classes.sidebar__children}>{children}</main>
+      <main className={classes.sidebar__children}>
+        <Outlet />
+      </main>
     </div>
   );
 };

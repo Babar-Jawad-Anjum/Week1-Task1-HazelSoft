@@ -1,8 +1,14 @@
-.dashboard__container
-{
-    height: 100%;
+.dashboard__container {
+  height: 100%;
 }
-.top__title
+.top__title {
+  text-align: center;
+}
+.image__container {
+  text-align: center;
+  padding: 50px 0;
+}
+.image
 {
-    text-align: center;
+    width: 70%;
 }
