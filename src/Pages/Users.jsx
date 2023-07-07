@@ -1,56 +1,97 @@
 import React, { useEffect, useState } from "react";
-import classes from "../Assets/css/Users.module.css";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import Backdrop from "../Components/Backdrop";
-import Modal from "../Components/AddUserModal";
 import axios from "axios";
-import EditModal from "../Components/EditUserModal";
-import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import classes from "../Assets/css/Users.module.css";
+import { useNavigate } from "react-router-dom";
+
+import Backdrop from "../Components/Backdrop";
+import UserModal from "../Components/UserModal";
+
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+
+const LIMIT = 5;
+
+const totalPagesCalculator = (total, limit) => {
+  const pages = [];
+  for (let x = 1; x <= parseInt(total / limit); x++) {
+    pages.push(x);
+  }
+  return pages;
+};
 
 const Users = () => {
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [singleUser, setSingleUser] = useState(null);
   const [searchItem, setSearchItem] = useState("");
+  const [flag, setFlag] = useState(false);
 
-  useEffect(() => {
-    const getUsers = () => {
-      axios
-        .get("http://localhost:4000/api/users/getAllUsers")
-        .then((response) => {
-          setUsers(response.data.users);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-    getUsers();
-  }, []);
+  // pagination states
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [activePage, setActivePage] = useState(1);
 
-  const modalCloseHandler = () => {
-    setIsModalOpen((prev) => !prev);
-  };
-
-  const getUserToEdit = (userId) => {
+  const getUsers = () => {
     axios
-      .get(`http://localhost:4000/api/users/getUser/${userId}`)
+      .get("http://localhost:4000/api/users/getAllUsers", {
+        params: {
+          page: activePage,
+          size: LIMIT,
+        },
+      })
       .then((response) => {
-        setSingleUser(response.data.user);
-        setIsEditModalOpen(true);
+        setUsers(() => response.data.users);
+        setTotalUsers(() => response.data.totalRecords);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    getUsers();
+  }, [activePage]);
+
+  useEffect(() => {
+    if (flag) {
+      getUsers();
+      setFlag(false);
+    }
+  }, [flag]);
+
+  // Add New User Button click handler
+  const addUserButtonHandler = () => {
+    setSingleUser(null);
+    setIsModalOpen((prev) => !prev);
+  };
+
+  // Get Single User For Edit
+  const getUserToEdit = (userId) => {
+    axios
+      .get(`http://localhost:4000/api/users/getUser/${userId}`)
+      .then((response) => {
+        setSingleUser(response.data.user);
+        setIsModalOpen(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //Edit modal close handler
+  const modalCloseHandler = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
+  //Delete Single User Handler
   const deleteUserHandler = (userId) => {
     axios
       .delete(`http://localhost:4000/api/users/delete/${userId}`)
       .then((response) => {
         toast.success(response.data.success);
+        setFlag(true);
         setTimeout(() => {
           navigate("/users");
         }, 1000);
@@ -60,26 +101,35 @@ const Users = () => {
       });
   };
 
-  const editModalCloseHandler = () => {
-    setIsEditModalOpen((prev) => !prev);
-  };
-
+  //Set Search User Value
   const onChangeSearch = (e) => {
     setSearchItem(e.target.value);
+  };
+
+  // Sort Users By Name Handler
+  const sortUsersHandler = () => {
+    axios
+      .get("http://localhost:4000/api/users/sortUsers", {
+        params: {
+          page: activePage,
+          size: LIMIT,
+        },
+      })
+      .then((response) => {
+        setUsers(response.data.sortedUsers);
+        toast.success("Users Sorted Successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
     <div className={classes.users__wrapper}>
       <Toaster />
       <h1 className={classes.users__top__title}>List Of User's</h1>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
+      <div className={classes.users__top__bar}>
+        <div className={classes.search__bar}>
           <span className={classes.search__title}>Search</span>
           <input
             className={classes.search__input}
@@ -90,12 +140,20 @@ const Users = () => {
             required
           />
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className={classes.add__user__btn}
-        >
-          Add User
-        </button>
+        <div>
+          <button
+            onClick={addUserButtonHandler}
+            className={classes.add__user__btn}
+          >
+            Add User
+          </button>
+          <button
+            onClick={sortUsersHandler}
+            className={classes.sort__users__btn}
+          >
+            Sort Users
+          </button>
+        </div>
       </div>
       <table className={classes.table} id="myTable">
         <thead>
@@ -129,7 +187,7 @@ const Users = () => {
                     <td>{element.gender}</td>
                     <td>{element.phone}</td>
                     <td>Active</td>
-                    <td style={{ display: "flex" }}>
+                    <td className={classes.edit__delete__btn__wrapper}>
                       <div
                         onClick={() => getUserToEdit(element._id)}
                         className={classes.edit__icon__parent}
@@ -148,15 +206,43 @@ const Users = () => {
             : "Loading..."}
         </tbody>
       </table>
+
+      <nav>
+        <ul className={classes.pagination}>
+          {activePage !== 1 && (
+            <IoIosArrowBack
+              onClick={() => setActivePage(activePage - 1)}
+              className={classes.pagination__prev_btn}
+            />
+          )}
+          {totalPagesCalculator(totalUsers, LIMIT).map((pageNo) => (
+            <li
+              className={`${classes.pageItem} ${
+                activePage === pageNo
+                  ? classes.pagination__active_btn
+                  : classes.pagination__inaActive_btn
+              }`}
+              key={pageNo}
+              onClick={() => setActivePage(pageNo)}
+            >
+              <a className={classes.pageLink}>{pageNo}</a>
+            </li>
+          ))}
+          {activePage !== parseInt(totalUsers / LIMIT) && (
+            <IoIosArrowForward
+              onClick={() => setActivePage(activePage + 1)}
+              className={classes.pagination__next_btn}
+            />
+          )}
+        </ul>
+      </nav>
+
+      {/* User Modal */}
       {isModalOpen && <Backdrop modalCloseHandler={modalCloseHandler} />}
-      {isModalOpen && <Modal modalCloseHandler={modalCloseHandler} />}
-      {isEditModalOpen && (
-        <Backdrop editModalCloseHandler={editModalCloseHandler} />
-      )}
-      {isEditModalOpen && (
-        <EditModal
+      {isModalOpen && (
+        <UserModal
           singleUser={singleUser}
-          editModalCloseHandler={editModalCloseHandler}
+          modalCloseHandler={modalCloseHandler}
         />
       )}
     </div>

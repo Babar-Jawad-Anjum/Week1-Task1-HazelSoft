@@ -1,11 +1,16 @@
-import React, { useRef } from "react";
-import classes from "../Assets/css/Login.module.css";
-import logo from "../Assets/images/logo.png";
+import React, { useContext, useRef } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+
+import classes from "../Assets/css/Login.module.css";
+import logo from "../Assets/images/logo.png";
+
+import { AuthContext } from "../Context/Auth";
 
 const Login = () => {
+  const { setIsLoggedIn } = useContext(AuthContext);
+
   const navigate = useNavigate();
 
   const emailRef = useRef();
@@ -23,8 +28,15 @@ const Login = () => {
       .then(function (response) {
         if (response.data.success) {
           toast.success(response.data.success);
+
+          // set Auth value to true
+          setIsLoggedIn(true);
+
+          // set token
+          localStorage.setItem("auth-token", response.data.token);
+
           setTimeout(() => {
-            navigate("/")
+            navigate("/");
           }, 1000);
         } else {
           toast.error(response.data.error);
