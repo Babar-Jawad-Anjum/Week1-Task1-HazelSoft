@@ -90,7 +90,7 @@ const Sidebar = () => {
           <NavLink
             onClick={() => setActive(2)}
             style={active === 2 ? { background: "#025c91" } : null}
-            to="/add-user"
+            to="/products"
             className={classes.link}
           >
             <div className={classes.icon}>
@@ -100,7 +100,7 @@ const Sidebar = () => {
               style={{ display: isOpenSidebar ? "block" : "none" }}
               className={classes.link__text}
             >
-              Add User
+              Products
             </div>
           </NavLink>
           <NavLink className={classes.link} onClick={handleLogout}>

@@ -7,14 +7,25 @@ import { useNavigate } from "react-router-dom";
 import Backdrop from "../Components/Backdrop";
 import UserModal from "../Components/UserModal";
 
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import {
+  AiOutlineDelete,
+  AiOutlineEdit,
+  AiOutlineSortAscending,
+} from "react-icons/ai";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const LIMIT = 5;
 
 const totalPagesCalculator = (total, limit) => {
+  //Check if total/count remainder is 0 or not
+  let totalCounter;
+  if (total % limit === 0) {
+    totalCounter = parseInt(total / limit);
+  } else {
+    totalCounter = parseInt(total / limit) + 1;
+  }
   const pages = [];
-  for (let x = 1; x <= parseInt(total / limit); x++) {
+  for (let x = 1; x <= totalCounter; x++) {
     pages.push(x);
   }
   return pages;
@@ -25,8 +36,10 @@ const Users = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [users, setUsers] = useState([]);
-  const [singleUser, setSingleUser] = useState(null);
+  const [editUser, setEditUser] = useState(null);
   const [searchItem, setSearchItem] = useState("");
+
+  //Flag for users api calls when user adds or changed
   const [flag, setFlag] = useState(false);
 
   // pagination states
@@ -63,7 +76,7 @@ const Users = () => {
 
   // Add New User Button click handler
   const addUserButtonHandler = () => {
-    setSingleUser(null);
+    setEditUser(null);
     setIsModalOpen((prev) => !prev);
   };
 
@@ -72,7 +85,7 @@ const Users = () => {
     axios
       .get(`http://localhost:4000/api/users/getUser/${userId}`)
       .then((response) => {
-        setSingleUser(response.data.user);
+        setEditUser(response.data.user);
         setIsModalOpen(true);
       })
       .catch((error) => {
@@ -107,12 +120,13 @@ const Users = () => {
   };
 
   // Sort Users By Name Handler
-  const sortUsersHandler = () => {
+  const sortHandler = (sortType) => {
     axios
-      .get("http://localhost:4000/api/users/sortUsers", {
+      .get("http://localhost:4000/api/users/sort", {
         params: {
           page: activePage,
           size: LIMIT,
+          sortType: sortType,
         },
       })
       .then((response) => {
@@ -147,20 +161,36 @@ const Users = () => {
           >
             Add User
           </button>
-          <button
+          {/* <button
             onClick={sortUsersHandler}
             className={classes.sort__users__btn}
           >
             Sort Users
-          </button>
+          </button> */}
         </div>
       </div>
       <table className={classes.table} id="myTable">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Gender</th>
+            <th onClick={() => sortHandler("sortByName")}>
+              <span className={classes.table__head}>
+                Name
+                <AiOutlineSortAscending className={classes.table__head__icon} />
+              </span>
+            </th>
+
+            <th onClick={() => sortHandler("sortByEmail")}>
+              <span className={classes.table__head}>
+                Email
+                <AiOutlineSortAscending className={classes.table__head__icon} />
+              </span>
+            </th>
+            <th onClick={() => sortHandler("sortByGender")}>
+              <span className={classes.table__head}>
+                Gender
+                <AiOutlineSortAscending className={classes.table__head__icon} />
+              </span>
+            </th>
             <th>Contact</th>
             <th>Status</th>
             <th>Actions</th>
@@ -241,7 +271,8 @@ const Users = () => {
       {isModalOpen && <Backdrop modalCloseHandler={modalCloseHandler} />}
       {isModalOpen && (
         <UserModal
-          singleUser={singleUser}
+          editUser={editUser}
+          setFlag={setFlag}
           modalCloseHandler={modalCloseHandler}
         />
       )}

@@ -33,9 +33,14 @@
 .left__portion input[type="password"] {
   width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 3px;
   border: 1px solid #89c2c8;
   border-radius: 3px;
+}
+
+.password__lable
+{
+  margin-top: 15px;
 }
 
 .left__portion label {
@@ -62,16 +67,22 @@
 
 .forgot__password
 {
-  margin-bottom: 15px;
+  margin: 15px 0;
   float: right;
 }
 .forgot__password > a
 {
   text-decoration: none;
   color: black;
+  cursor: pointer;
 }
 
 .right__portion {
   width: calc(100vw - 550px);
   background-color: #01bbcf;
+}
+
+.error
+{
+  color: rgb(209, 15, 15);
 }

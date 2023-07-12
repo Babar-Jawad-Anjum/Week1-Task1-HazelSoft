@@ -9,6 +9,7 @@ import PageNotFound from "./Pages/PageNotFound";
 
 import { AuthContextProvider } from "./Context/Auth";
 import ProtectedRoutes from "./Auth/ProtectedRoutes";
+import Products from "./Pages/Products";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route element={<Sidebar />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/products" element={<Products />} />
             </Route>
           </Route>
         </Routes>
