@@ -7,14 +7,14 @@ import classes from "../Assets/css/Modal.module.css";
 
 import { RxCross2 } from "react-icons/rx";
 
-const UserModal = ({ singleUser, modalCloseHandler }) => {
+const UserModal = ({ editUser, modalCloseHandler, setFlag }) => {
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState({
-    name: singleUser ? singleUser.name : "",
-    email: singleUser ? singleUser.email : "",
-    gender: singleUser ? singleUser.gender : "",
-    phone: singleUser ? singleUser.phone : "",
+    name: editUser ? editUser.name : "",
+    email: editUser ? editUser.email : "",
+    gender: editUser ? editUser.gender : "",
+    phone: editUser ? editUser.phone : "",
   });
 
   const handleInputChange = (e) => {
@@ -39,6 +39,7 @@ const UserModal = ({ singleUser, modalCloseHandler }) => {
         if (response.data.success) {
           toast.success(response.data.success);
           setTimeout(() => {
+            setFlag(true);
             modalCloseHandler();
             navigate("/users");
           }, 1500);
@@ -58,7 +59,7 @@ const UserModal = ({ singleUser, modalCloseHandler }) => {
   const editUserSubmitHandler = (e) => {
     e.preventDefault();
     axios
-      .post(`http://localhost:4000/api/users/user/edit/${singleUser._id}`, {
+      .post(`http://localhost:4000/api/users/user/edit/${editUser._id}`, {
         name: userData.name,
         email: userData.email,
         gender: userData.gender,
@@ -68,6 +69,7 @@ const UserModal = ({ singleUser, modalCloseHandler }) => {
         if (response.data.success) {
           toast.success(response.data.success);
           setTimeout(() => {
+            setFlag(true);
             modalCloseHandler();
             navigate("/users");
           }, 1500);
@@ -91,10 +93,10 @@ const UserModal = ({ singleUser, modalCloseHandler }) => {
         <RxCross2 />
       </div>
       <div className={classes.modal__title}>
-        {singleUser ? "Edit User" : "Add User"}
+        {editUser ? "Edit User" : "Add User"}
       </div>
       <form
-        onSubmit={singleUser ? editUserSubmitHandler : addUserSubmitHandler}
+        onSubmit={editUser ? editUserSubmitHandler : addUserSubmitHandler}
       >
         <div className={classes.form__group}>
           <label htmlFor="name">Name:</label>
@@ -127,9 +129,15 @@ const UserModal = ({ singleUser, modalCloseHandler }) => {
             required
           >
             <option value="">Select</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
+            <option value="male" selected={userData.gender === "male"}>
+              Male
+            </option>
+            <option value="female" selected={userData.gender === "female"}>
+              Female
+            </option>
+            <option value="other" selected={userData.gender === "other"}>
+              Other
+            </option>
           </select>
         </div>
         <div className={classes.form__group}>
@@ -147,7 +155,7 @@ const UserModal = ({ singleUser, modalCloseHandler }) => {
         <input
           className={classes.form__submit}
           type="submit"
-          value={singleUser ? "Edit User" : "Add User"}
+          value={editUser ? "Edit User" : "Add User"}
         />
       </form>
     </div>

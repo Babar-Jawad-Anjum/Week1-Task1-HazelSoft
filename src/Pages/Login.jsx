@@ -1,7 +1,8 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useForm } from "react-hook-form";
 
 import classes from "../Assets/css/Login.module.css";
 import logo from "../Assets/images/logo.png";
@@ -9,25 +10,23 @@ import logo from "../Assets/images/logo.png";
 import { AuthContext } from "../Context/Auth";
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const { setIsLoggedIn } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
-  const emailRef = useRef();
-  const passwordRef = useRef();
-
-  const loginHandler = (e) => {
+  const loginHandler = (data, e) => {
     e.preventDefault();
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
     axios
-      .post("http://localhost:4000/api/admin/login", {
-        email: email,
-        password: password,
-      })
+      .post("http://localhost:4000/api/admin/login", data)
       .then(function (response) {
         if (response.data.success) {
-          toast.success(response.data.success);
+          toast.success(response.data.success, {duration: 1000});
 
           // set Auth value to true
           setIsLoggedIn(true);
@@ -37,9 +36,9 @@ const Login = () => {
 
           setTimeout(() => {
             navigate("/");
-          }, 1000);
+          }, 1100);
         } else {
-          toast.error(response.data.error);
+          toast.error(response.data.error, {duration: 1000});
         }
       })
       .catch(function (error) {
@@ -56,26 +55,44 @@ const Login = () => {
         </div>
         <h4 className={classes.heading}>Welcome Admin!</h4>
         <h2 className={classes.sub__heading}>Login</h2>
-        <form onSubmit={loginHandler}>
+        <form onSubmit={handleSubmit(loginHandler)}>
           <label htmlFor="email">Email</label>
           <input
             type="email"
             id="email"
             placeholder="Enter Your Email"
-            ref={emailRef}
-            required
+            {...register("email", {
+              required: true,
+              pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+            })}
           />
+          {errors?.email?.type === "required" && (
+            <p className={classes.error}>Email is required</p>
+          )}
+          {errors?.email?.type === "pattern" && (
+            <p className={classes.error}>Valid email is required</p>
+          )}
 
-          <label htmlFor="password">Password</label>
+          <label className={classes.password__lable} htmlFor="password">
+            Password
+          </label>
           <input
             type="password"
             id="password"
             placeholder="Enter Your Password"
-            ref={passwordRef}
-            required
+            {...register("password", {
+              required: true,
+              minLength: 6,
+            })}
           />
+          {errors?.password?.type === "required" && (
+            <p className={classes.error}>Password is required</p>
+          )}
+          {errors?.password?.type === "minLength" && (
+            <p className={classes.error}>Atleast 6 characters required</p>
+          )}
           <p className={classes.forgot__password}>
-            <a href="">Forgot Password?</a>
+            <a>Forgot Password?</a>
           </p>
 
           <button type="submit">Login</button>
