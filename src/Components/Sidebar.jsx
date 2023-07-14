@@ -10,11 +10,15 @@ import {
   MdOutlineDashboardCustomize,
   MdOutlineAddToDrive,
 } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { setIsLogged } from "../redux/actions/authActions";
 
-import { AuthContext } from "../Context/Auth";
+// import { AuthContext } from "../Context/Auth";
 
 const Sidebar = () => {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  // const { setIsLoggedIn } = useContext(AuthContext);
+
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -27,7 +31,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("auth-token");
-    setIsLoggedIn(false);
+    dispatch(setIsLogged());
     navigate("/login");
   };
 
@@ -41,8 +45,8 @@ const Sidebar = () => {
           top: 0,
         }}
       >
-        <div className={classes.hamburger}>
-          <RxHamburgerMenu onClick={sideBarHandler} />
+        <div className={classes.hamburger} onClick={sideBarHandler}>
+          <RxHamburgerMenu />
         </div>
         <div
           style={{ display: isOpenSidebar ? "block" : "none" }}
