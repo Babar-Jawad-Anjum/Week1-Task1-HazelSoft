@@ -13,6 +13,10 @@ import {
   AiOutlineSortAscending,
 } from "react-icons/ai";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedUser, setUsers } from "../redux/actions/usersActions";
+import Loader from "../Components/Loader";
+import { setIsLoading } from "../redux/actions/loadingAction";
 
 const LIMIT = 5;
 
@@ -34,9 +38,13 @@ const totalPagesCalculator = (total, limit) => {
 const Users = () => {
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.allUsers.users);
+  const editUser = useSelector((state) => state.selectedUser);
+  const isLoading = useSelector((state) => state.isLoading);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [editUser, setEditUser] = useState(null);
+  // const [editUser, setEditUser] = useState(null);
   const [searchItem, setSearchItem] = useState("");
 
   //Flag for users api calls when user adds or changed
@@ -47,6 +55,7 @@ const Users = () => {
   const [activePage, setActivePage] = useState(1);
 
   const getUsers = () => {
+    dispatch(setIsLoading());
     axios
       .get("http://localhost:4000/api/users/getAllUsers", {
         params: {
@@ -55,11 +64,15 @@ const Users = () => {
         },
       })
       .then((response) => {
-        setUsers(() => response.data.users);
-        setTotalUsers(() => response.data.totalRecords);
+        setTimeout(() => {
+          setTotalUsers(() => response.data.totalRecords);
+          dispatch(setUsers(response.data.users));
+          dispatch(setIsLoading());
+        }, 1000);
       })
       .catch((error) => {
         console.log(error);
+        dispatch(setIsLoading());
       });
   };
 
@@ -76,17 +89,21 @@ const Users = () => {
 
   // Add New User Button click handler
   const addUserButtonHandler = () => {
-    setEditUser(null);
+    dispatch(setSelectedUser(null));
     setIsModalOpen((prev) => !prev);
   };
 
   // Get Single User For Edit
   const getUserToEdit = (userId) => {
+    dispatch(setIsLoading());
     axios
       .get(`http://localhost:4000/api/users/getUser/${userId}`)
       .then((response) => {
-        setEditUser(response.data.user);
-        setIsModalOpen(true);
+        setTimeout(() => {
+          dispatch(setSelectedUser(response.data.user));
+          dispatch(setIsLoading());
+          setIsModalOpen(true);
+        }, 700);
       })
       .catch((error) => {
         console.log(error);
@@ -130,7 +147,7 @@ const Users = () => {
         },
       })
       .then((response) => {
-        setUsers(response.data.sortedUsers);
+        dispatch(setUsers(response.data.sortedUsers));
         toast.success("Users Sorted Successfully");
       })
       .catch((error) => {
@@ -197,43 +214,40 @@ const Users = () => {
           </tr>
         </thead>
         <tbody>
-          {users
-            ? users
-                .filter((element) => {
-                  if (searchItem === "") {
-                    return element;
-                  } else if (
-                    element.name
-                      .toLowerCase()
-                      .includes(searchItem.toLowerCase())
-                  ) {
-                    return element;
-                  }
-                })
-                .map((element) => (
-                  <tr key={element._id}>
-                    <td>{element.name}</td>
-                    <td>{element.email}</td>
-                    <td>{element.gender}</td>
-                    <td>{element.phone}</td>
-                    <td>Active</td>
-                    <td className={classes.edit__delete__btn__wrapper}>
-                      <div
-                        onClick={() => getUserToEdit(element._id)}
-                        className={classes.edit__icon__parent}
-                      >
-                        <AiOutlineEdit className={classes.edit__icon} />
-                      </div>
-                      <div
-                        onClick={() => deleteUserHandler(element._id)}
-                        className={classes.delete__icon__parent}
-                      >
-                        <AiOutlineDelete className={classes.delete__icon} />
-                      </div>
-                    </td>
-                  </tr>
-                ))
-            : "Loading..."}
+          {!isLoading &&
+            users
+              .filter((element) => {
+                if (searchItem === "") {
+                  return element;
+                } else if (
+                  element.name.toLowerCase().includes(searchItem.toLowerCase())
+                ) {
+                  return element;
+                }
+              })
+              .map((element) => (
+                <tr key={element._id}>
+                  <td>{element.name}</td>
+                  <td>{element.email}</td>
+                  <td>{element.gender}</td>
+                  <td>{element.phone}</td>
+                  <td>Active</td>
+                  <td className={classes.edit__delete__btn__wrapper}>
+                    <div
+                      onClick={() => getUserToEdit(element._id)}
+                      className={classes.edit__icon__parent}
+                    >
+                      <AiOutlineEdit className={classes.edit__icon} />
+                    </div>
+                    <div
+                      onClick={() => deleteUserHandler(element._id)}
+                      className={classes.delete__icon__parent}
+                    >
+                      <AiOutlineDelete className={classes.delete__icon} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
         </tbody>
       </table>
 
@@ -266,6 +280,9 @@ const Users = () => {
           )}
         </ul>
       </nav>
+
+      {isLoading && <Backdrop />}
+      {isLoading && <Loader />}
 
       {/* User Modal */}
       {isModalOpen && <Backdrop modalCloseHandler={modalCloseHandler} />}

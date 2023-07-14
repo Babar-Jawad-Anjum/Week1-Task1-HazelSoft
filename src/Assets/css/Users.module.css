@@ -159,3 +159,8 @@
 .pageLink {
   text-decoration: none;
 }
+
+.table__head
+{
+  cursor: pointer;
+}

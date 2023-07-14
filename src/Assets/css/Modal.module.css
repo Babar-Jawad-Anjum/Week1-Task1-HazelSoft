@@ -7,7 +7,7 @@
   width: 30rem;
   z-index: 10;
   position: fixed;
-  top: 20vh;
+  top: 10vh;
   left: calc(50% - 15rem);
 }
 .modal__cancel__icon {
@@ -47,31 +47,37 @@
 }
 
 .form__group input[type="text"],
+.form__group input[type="number"],
 .form__group input[type="email"],
 .form__group select {
   flex: 1;
-  padding: 10px;
+  padding: 6px;
 }
 
-.form__submit
-{
-    background-color: #01bbcf;
-    color: white;
-    border: none;
-    padding: 10px 30px;
-    float: right;
-    margin-top: 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
+.form__submit {
+  background-color: #01bbcf;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  float: right;
+  margin-top: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
 }
-.form__submit:hover
-{
-    background: #038b9a;
+.form__submit:hover {
+  background: #038b9a;
 }
 
-.form__group input:focus
-{
-    outline: none;
-    border: 1px solid #01bbcf;
+.form__group input:focus {
+  outline: none;
+  border: 1px solid #01bbcf;
+}
+
+.modal__error {
+  text-align: left;
+  margin-left: 6.5rem;
+  margin-top: -10px;
+  color: red;
+  font-size: 12px;
 }

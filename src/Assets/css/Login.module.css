@@ -7,23 +7,20 @@
 
 .left__portion {
   width: 550px;
-  padding: 50px 70px 50px 70px;
+  padding: 0 70px 50px 70px;
 }
-.heading
-{
-    font-size: 30px;
-    text-align: center;
+.heading {
+  font-size: 30px;
+  text-align: center;
 }
-.sub__heading
-{
-    font-size: 25px;
-    margin: 20px 0;
-    text-align: center;
+.sub__heading {
+  font-size: 25px;
+  margin: 20px 0;
+  text-align: center;
 }
-.logo__container
-{
-    display: flex;
-    justify-content: center;
+.logo__container {
+  display: flex;
+  justify-content: center;
 }
 .logo {
   height: 200px;
@@ -38,8 +35,7 @@
   border-radius: 3px;
 }
 
-.password__lable
-{
+.password__lable {
   margin-top: 15px;
 }
 
@@ -48,7 +44,6 @@
   font-size: 15px;
   font-weight: bold;
   margin-bottom: 5px;
-  
 }
 .left__portion button {
   width: 100%;
@@ -59,22 +54,11 @@
   border-radius: 3px;
   cursor: pointer;
   font-weight: bold;
+  margin-top: 15px;
 }
 
 .left__portion button:hover {
   background-color: #0d7d8a;
-}
-
-.forgot__password
-{
-  margin: 15px 0;
-  float: right;
-}
-.forgot__password > a
-{
-  text-decoration: none;
-  color: black;
-  cursor: pointer;
 }
 
 .right__portion {
@@ -82,7 +66,46 @@
   background-color: #01bbcf;
 }
 
-.error
-{
-  color: rgb(209, 15, 15);
+.simple_message {
+  color: rgb(0, 0, 0);
+  margin-bottom: 1px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.password__requirements {
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.icon__error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.valid {
+  color: green;
+  margin-bottom: 1px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.invalid {
+  color: red;
+  margin-bottom: 1px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1px;
+  font-size: 14px;
+}
+
+.error__border {
+  border: 1px solid red;
 }
